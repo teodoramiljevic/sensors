@@ -1,37 +1,54 @@
 package teodoramiljevic.sensors.api.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import teodoramiljevic.sensors.api.models.SensorData;
+import teodoramiljevic.sensors.api.services.message.MessageService;
 
 import java.util.Optional;
 
 @Service
 public class SensorService {
 
-    @Autowired
-    private MessageService messageService;
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final MessageService messageService;
+    private final ObjectMapper objectMapper;
+
+    public SensorService(final MessageService messageService, final ObjectMapper objectMapper) {
+        this.messageService = messageService;
+        this.objectMapper = objectMapper;
+    }
+
+    private static final Logger logger = LogManager.getLogger(SensorService.class);
 
     public Optional<SensorData> addValueToSensor(final double value, final String sensorId){
         final SensorData sensorData = new SensorData(sensorId, value);
+        final Optional<String> confirmationId = publishValue(sensorData);
 
+
+        final Boolean valueAdded = confirmValue(confirmationId);
+        return valueAdded? Optional.of(sensorData): Optional.empty();
+    }
+
+    private Optional<String> publishValue(final SensorData sensorData){
         try{
-            final String sensorDataJsonValue = objectMapper.writeValueAsString(sensorData);
+            final String sensorDataJsonValue =  objectMapper.writeValueAsString(sensorData);
+            return messageService.publish(sensorDataJsonValue);
+        }
+        catch(final Exception ex){
 
-            final String id = messageService.publish(sensorDataJsonValue);
+            logger.error(ex.getMessage(), ex.getStackTrace());
+            return Optional.empty();
+        }
+    }
 
-            if(id != null){
-                final Boolean valueAdded = messageService.consume(id);
-                return valueAdded?Optional.of(sensorData):Optional.empty();
-            }
-
-        }catch(final Exception ex){
-            // TODO: Log and manage
+    private boolean confirmValue(final Optional<String> confirmationId){
+        if(confirmationId.isPresent()){
+            return messageService.consume(confirmationId.get());
         }
 
-        return Optional.empty();
+        logger.debug("Confirming thar value is added failed, publishing did not return valid ID for confirmation");
+        return false;
     }
 }

@@ -1,5 +1,7 @@
 package teodoramiljevic.sensors.api.controllers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class SensorController {
     private SensorService sensorService;
     @Autowired
     private ModelMapper modelMapper;
+    private static final Logger logger = LogManager.getLogger(SensorController.class);
 
 
     //TODO: Handle invalid model exceptions - global handling
@@ -32,10 +35,14 @@ public class SensorController {
 
         if(sensorData.isPresent()){
             final SensorDataAddValueResponse sensorDataAddValueResponse = modelMapper.map(sensorData.get(), SensorDataAddValueResponse.class);
+
+            logger.debug("Successfully added sensor value: "+ sensorDataAddValueResponse.getValue());
             return ResponseEntity.ok(sensorDataAddValueResponse);
         }
 
-        //TODO: Handle possible exceptions/empty sensor data with meaningful messages
+        logger.debug("Sensor service failed to add value for sensor " + sensorDataAddValueRequest.getId());
+
+        //TODO: Handle possible exceptions/empty sensor data with meaningful logs
         return ResponseEntity.status(500).body(null);
     }
 }
