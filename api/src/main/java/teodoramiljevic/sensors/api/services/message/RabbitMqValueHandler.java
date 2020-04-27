@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
-public class AddValueConsumer extends DefaultConsumer {
+public class RabbitMqValueHandler extends DefaultConsumer {
     /**
      * Constructs a new instance and records its association to the passed-in channel.
      *
@@ -18,9 +18,9 @@ public class AddValueConsumer extends DefaultConsumer {
      */
     private final String correlationId;
     private final BlockingQueue<String> responseQueue;
-    private final Logger logger = LogManager.getLogger(AddValueConsumer.class);
+    private final Logger logger = LogManager.getLogger(RabbitMqValueHandler.class);
 
-    public AddValueConsumer(final Channel channel, final String correlationId, final BlockingQueue<String> responseQueue) {
+    RabbitMqValueHandler(final Channel channel, final String correlationId, final BlockingQueue<String> responseQueue) {
         super(channel);
         this.correlationId = correlationId;
         this.responseQueue = responseQueue;

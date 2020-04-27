@@ -3,52 +3,33 @@ package teodoramiljevic.sensors.api.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import teodoramiljevic.sensors.api.models.SensorData;
-import teodoramiljevic.sensors.api.services.message.MessageService;
+import teodoramiljevic.sensors.api.models.messages.SensorDataResponse;
+import teodoramiljevic.sensors.api.services.message.MessageConsumer;
+import teodoramiljevic.sensors.api.services.message.MessagePublisher;
 
 import java.util.Optional;
 
 @Service
-public class SensorService {
-
-    private final MessageService messageService;
-    private final ObjectMapper objectMapper;
-
-    public SensorService(final MessageService messageService, final ObjectMapper objectMapper) {
-        this.messageService = messageService;
-        this.objectMapper = objectMapper;
-    }
-
+public class SensorService extends SensorMessageService {
     private static final Logger logger = LogManager.getLogger(SensorService.class);
 
-    public Optional<SensorData> addValueToSensor(final double value, final String sensorId){
+    public SensorService(final MessagePublisher messagePublisher, final MessageConsumer messageConsumer,
+                         final ObjectMapper objectMapper, final ModelMapper modelMapper) {
+        super(messagePublisher, messageConsumer, objectMapper, modelMapper);
+    }
+
+    public Optional<SensorDataResponse> addValueToSensor(final double value, final String sensorId){
         final SensorData sensorData = new SensorData(sensorId, value);
         final Optional<String> confirmationId = publishValue(sensorData);
 
-
-        final Boolean valueAdded = confirmValue(confirmationId);
-        return valueAdded? Optional.of(sensorData): Optional.empty();
-    }
-
-    private Optional<String> publishValue(final SensorData sensorData){
-        try{
-            final String sensorDataJsonValue =  objectMapper.writeValueAsString(sensorData);
-            return messageService.publish(sensorDataJsonValue);
-        }
-        catch(final Exception ex){
-
-            logger.error(ex.getMessage(), ex.getStackTrace());
-            return Optional.empty();
-        }
-    }
-
-    private boolean confirmValue(final Optional<String> confirmationId){
-        if(confirmationId.isPresent()){
-            return messageService.consume(confirmationId.get());
+        final Optional<String> confirmedValue = getValue(confirmationId);
+        if(confirmedValue.isPresent()){
+            return deserializeValue(confirmedValue.get(), SensorDataResponse.class);
         }
 
-        logger.debug("Confirming thar value is added failed, publishing did not return valid ID for confirmation");
-        return false;
+        return Optional.empty();
     }
 }
