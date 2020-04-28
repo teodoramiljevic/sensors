@@ -31,7 +31,7 @@ public class RabbitMqMessagePublisher extends RabbitMqMessageService implements 
             return Optional.of(props.getCorrelationId());
         }
         catch (final Exception ex){
-            logger.error(ex.getMessage(), ex.getStackTrace());
+            logger.error(ex.getMessage(), ex);
             return Optional.empty();
         }
     }

@@ -10,6 +10,16 @@ public class AppProperties {
     private String directSensorExchange;
     private String sensorQueue;
     private String rabbitHost;
+
+    public String getRabbitPort() {
+        return rabbitPort;
+    }
+
+    public void setRabbitPort(String rabbitPort) {
+        this.rabbitPort = rabbitPort;
+    }
+
+    private String rabbitPort;
     private String sensorReplyQueue;
 
 

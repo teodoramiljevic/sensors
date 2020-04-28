@@ -31,7 +31,7 @@ class SensorMessageService {
         try{
             return Optional.of(objectMapper.readValue(value, originalClass));
         }catch(final Exception ex){
-            logger.error(ex.getMessage(), ex.getStackTrace());
+            logger.error(ex.getMessage(), ex);
             return Optional.empty();
         }
     }
@@ -42,7 +42,7 @@ class SensorMessageService {
             return messagePublisher.publish(sensorDataJsonValue);
         }
         catch(final Exception ex){
-            logger.error(ex.getMessage(), ex.getStackTrace());
+            logger.error(ex.getMessage(), ex);
             return Optional.empty();
         }
     }

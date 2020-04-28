@@ -1,0 +1,18 @@
+version: "3"
+services:
+    rabbitmq:
+        image: rabbitmq:alpine
+    sensor-service:
+        build: 
+            context: ./service
+        environment:
+            - APP_RABBIT_HOST=rabbitmq
+        command: sh -c './wait-for-it.sh rabbitmq:5672 -- java -jar app.jar'
+    api:
+        build:
+            context: ./api
+        environment: 
+            - APP_RABBIT_HOST=rabbitmq
+        command: sh -c './wait-for-it.sh rabbitmq:5672 -- java -jar app.jar'
+        ports: 
+            - 8080:8080

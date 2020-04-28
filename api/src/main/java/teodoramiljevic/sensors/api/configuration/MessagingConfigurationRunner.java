@@ -41,7 +41,7 @@ public class MessagingConfigurationRunner implements CommandLineRunner {
             connection.close();
         }
         catch (final Exception ex){
-            logger.error(ex.getMessage(), ex.getStackTrace());
+            logger.error(ex.getMessage(), ex);
         }
     }
 }

@@ -3,7 +3,6 @@ package teodoramiljevic.sensors.service.services;
 import com.rabbitmq.client.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import teodoramiljevic.sensors.service.configuration.AppProperties;
 
@@ -13,8 +12,6 @@ import java.util.concurrent.TimeoutException;
 
 @Service
 public class SensorService implements  AutoCloseable{
-
-    @Autowired
     private AppProperties properties;
 
     private Connection connection;
@@ -22,9 +19,12 @@ public class SensorService implements  AutoCloseable{
 
     private final Logger logger = LogManager.getLogger();
 
-    public SensorService() throws IOException, TimeoutException {
+    public SensorService(AppProperties properties) throws IOException, TimeoutException {
+        this.properties = properties;
+
         final ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
+        logger.debug(properties.getRabbitHost(), properties.getRabbitPort());
+        factory.setHost(properties.getRabbitHost()); //TODO: construct url
 
         connection = factory.newConnection();
         channel = connection.createChannel();

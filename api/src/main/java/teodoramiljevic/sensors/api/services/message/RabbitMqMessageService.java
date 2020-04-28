@@ -42,7 +42,7 @@ public class RabbitMqMessageService implements AutoCloseable{
             connection.close();
         }
         catch(final Exception ex){
-            logger.error(ex.getMessage(), ex.getStackTrace());
+            logger.error(ex.getMessage(), ex);
         }
     }
 }

@@ -36,7 +36,7 @@ public class RabbitMqMessageConsumer extends RabbitMqMessageService implements M
             return Optional.of(result);
         }
         catch (final Exception ex){
-            logger.error(ex.getMessage(), ex.getStackTrace());
+            logger.error(ex.getMessage(), ex);
             return Optional.empty();
         }
     }
