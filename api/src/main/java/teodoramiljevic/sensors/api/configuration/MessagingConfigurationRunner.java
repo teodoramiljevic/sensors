@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class MessagingConfigurationRunner implements CommandLineRunner {
 
     @Autowired
-    private AppProperties properties;
+    private RabbitMqProperties properties;
 
     private static final Logger logger = LogManager.getLogger(MessagingConfigurationRunner.class);
 

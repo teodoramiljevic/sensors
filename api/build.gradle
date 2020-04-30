@@ -10,6 +10,7 @@ sourceCompatibility = '11'
 targetCompatibility = '11'
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 }
 
@@ -27,6 +28,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-log4j2
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '2.2.6.RELEASE'
 
+	compile group: 'teodoramiljevic.sensors', name: 'messaging', version:'1.0'
 }
 
 configurations.all {

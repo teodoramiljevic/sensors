@@ -6,14 +6,22 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties
-@ConfigurationProperties("app")
-public class AppProperties {
+@ConfigurationProperties("app.rabbitmq")
+public class RabbitMqProperties {
     private String broadcastSensorExchange;
     private String directSensorExchange;
     private String sensorQueue;
     private String rabbitHost;
     private String sensorReplyQueue;
+    private String consumerTimeout;
 
+    public long getConsumerTimeout() {
+        return Long.parseLong(consumerTimeout);
+    }
+
+    public void setConsumerTimeout(final String consumerTimeout) {
+        this.consumerTimeout = consumerTimeout;
+    }
 
     public String getSensorReplyQueue() {
         return sensorReplyQueue;

@@ -1,24 +1,24 @@
-package teodoramiljevic.sensors.api.services.message;
+package teodoramiljevic.sensors.api.communication.rabbitmq;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import teodoramiljevic.sensors.api.configuration.AppProperties;
+import teodoramiljevic.sensors.api.configuration.RabbitMqProperties;
 
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
 
-public class RabbitMqMessageService implements AutoCloseable{
+public class RabbitMqConnector implements AutoCloseable{
 
-    final AppProperties properties;
+    final RabbitMqProperties properties;
     final Connection connection;
-    private final Logger logger = LogManager.getLogger(RabbitMqMessageService.class);
+    private final Logger logger = LogManager.getLogger(RabbitMqConnector.class);
 
-    RabbitMqMessageService(final AppProperties properties) throws IOException, TimeoutException {
+    RabbitMqConnector(final RabbitMqProperties properties) throws IOException, TimeoutException {
 
         this.properties = properties;
 

@@ -1,4 +1,4 @@
-package teodoramiljevic.sensors.api.services.message;
+package teodoramiljevic.sensors.api.communication;
 
 import java.util.Optional;
 

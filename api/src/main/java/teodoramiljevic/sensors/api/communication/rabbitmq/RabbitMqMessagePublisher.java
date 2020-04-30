@@ -1,4 +1,4 @@
-package teodoramiljevic.sensors.api.services.message;
+package teodoramiljevic.sensors.api.communication.rabbitmq;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -6,7 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import teodoramiljevic.sensors.api.configuration.AppProperties;
+import teodoramiljevic.sensors.api.communication.MessagePublisher;
+import teodoramiljevic.sensors.api.configuration.RabbitMqProperties;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -14,11 +15,11 @@ import java.util.concurrent.TimeoutException;
 
 @Service
 @Qualifier("default")
-public class RabbitMqMessagePublisher extends RabbitMqMessageService implements MessagePublisher {
+public class RabbitMqMessagePublisher extends RabbitMqConnector implements MessagePublisher {
 
     private final Logger logger = LogManager.getLogger(RabbitMqMessagePublisher.class);
 
-    public RabbitMqMessagePublisher(final AppProperties properties) throws IOException, TimeoutException {
+    public RabbitMqMessagePublisher(final RabbitMqProperties properties) throws IOException, TimeoutException {
         super(properties);
     }
 

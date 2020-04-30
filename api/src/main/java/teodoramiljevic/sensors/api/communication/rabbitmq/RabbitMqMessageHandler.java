@@ -1,4 +1,4 @@
-package teodoramiljevic.sensors.api.services.message;
+package teodoramiljevic.sensors.api.communication.rabbitmq;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -10,17 +10,12 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
-public class RabbitMqValueHandler extends DefaultConsumer {
-    /**
-     * Constructs a new instance and records its association to the passed-in channel.
-     *
-     * @param channel the channel to which this consumer is attached
-     */
+public class RabbitMqMessageHandler extends DefaultConsumer {
     private final String correlationId;
     private final BlockingQueue<String> responseQueue;
-    private final Logger logger = LogManager.getLogger(RabbitMqValueHandler.class);
+    private final Logger logger = LogManager.getLogger(RabbitMqMessageHandler.class);
 
-    RabbitMqValueHandler(final Channel channel, final String correlationId, final BlockingQueue<String> responseQueue) {
+    RabbitMqMessageHandler(final Channel channel, final String correlationId, final BlockingQueue<String> responseQueue) {
         super(channel);
         this.correlationId = correlationId;
         this.responseQueue = responseQueue;

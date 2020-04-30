@@ -1,35 +1,37 @@
 package teodoramiljevic.sensors.api.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import teodoramiljevic.sensors.api.models.SensorData;
-import teodoramiljevic.sensors.api.models.messages.SensorDataResponse;
-import teodoramiljevic.sensors.api.services.message.MessageConsumer;
-import teodoramiljevic.sensors.api.services.message.MessagePublisher;
+import teodoramiljevic.sensors.api.services.messages.MessageService;
+import teodoramiljevic.sensors.api.services.messages.ResponseHandler;
+import teodoramiljevic.sensors.messaging.SensorAddValue.SensorAddValueResponse;
 
 import java.util.Optional;
 
 @Service
-public class SensorService extends SensorMessageService {
+public class SensorService{
     private static final Logger logger = LogManager.getLogger(SensorService.class);
+    private final MessageService messageService;
+    private final ResponseHandler responseHandler;
 
-    public SensorService(final MessagePublisher messagePublisher, final MessageConsumer messageConsumer,
-                         final ObjectMapper objectMapper, final ModelMapper modelMapper) {
-        super(messagePublisher, messageConsumer, objectMapper, modelMapper);
+    public SensorService(final MessageService messageService, final ResponseHandler responseHandler){
+        this.messageService = messageService;
+        this.responseHandler = responseHandler;
     }
 
-    public Optional<SensorDataResponse> addValueToSensor(final double value, final String sensorId){
+    public Optional<SensorData> addValueToSensor(final double value, final String sensorId){
         final SensorData sensorData = new SensorData(sensorId, value);
-        final Optional<String> confirmationId = publishValue(sensorData);
+        final Optional<String> confirmationId = messageService.publish(sensorData);
 
-        final Optional<String> confirmedValue = getValue(confirmationId);
+        final Optional<String> confirmedValue = messageService.consume(confirmationId);
         if(confirmedValue.isPresent()){
-            return deserializeValue(confirmedValue.get(), SensorDataResponse.class);
+            logger.debug("Successfully added value " + value + " to sensor " + sensorId);
+            return responseHandler.handleResponse(confirmedValue.get(), SensorAddValueResponse.class, SensorData.class);
         }
 
+        logger.debug("Failed to add sensor value " + value + " for sensor " + sensorId);
         return Optional.empty();
     }
 }

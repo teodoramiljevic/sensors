@@ -52,7 +52,7 @@ public class SensorService implements  AutoCloseable{
 
         }
         catch(Exception ex){
-
+            logger.error(ex.getMessage(), ex);
         }
     }
 
@@ -61,7 +61,7 @@ public class SensorService implements  AutoCloseable{
             connection.close();
         }
         catch(final Exception ex){
-
+            logger.error(ex.getMessage(),ex);
         }
     }
 }
