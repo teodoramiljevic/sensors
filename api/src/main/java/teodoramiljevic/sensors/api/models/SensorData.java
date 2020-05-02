@@ -1,25 +1,19 @@
 package teodoramiljevic.sensors.api.models;
 
-public class SensorData {
-    private final long timestamp;
-    private final String sensorId;
-    private final double value;
+public class SensorData{
+    private SensorValue value;
 
-    public SensorData(final String sensorId, final double value) {
-        this.sensorId = sensorId;
-        this.value = value;
-        this.timestamp = System.currentTimeMillis();
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public String getSensorId() {
-        return sensorId;
-    }
-
-    public double getValue() {
+    public SensorValue getValue() {
         return value;
+    }
+
+    public void setValue(final SensorValue value) {
+        this.value = value;
+    }
+
+    public SensorData(){}
+
+    public SensorData(final double value) {
+        this.value = new SensorValue(System.currentTimeMillis(), value);
     }
 }

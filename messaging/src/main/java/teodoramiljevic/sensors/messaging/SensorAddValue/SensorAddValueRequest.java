@@ -1,32 +1,23 @@
 package teodoramiljevic.sensors.messaging.SensorAddValue;
 
-public class SensorAddValueRequest {
-    private  long timestamp;
-    private String sensorId;
-    private  double value;
+import teodoramiljevic.sensors.messaging.RequestBase;
+import teodoramiljevic.sensors.messaging.SensorValue;
 
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(final long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getSensorId() {
-        return sensorId;
-    }
-
-    public void setSensorId(final String sensorId) {
-        this.sensorId = sensorId;
-    }
-
-    public double getValue() {
+public class SensorAddValueRequest extends RequestBase {
+    public SensorValue getValue() {
         return value;
     }
 
-    public void setValue(final double value) {
+    public void setValue(SensorValue value) {
         this.value = value;
     }
+
+    private SensorValue value;
+
+    public SensorAddValueRequest(String sensorId, SensorValue value){
+        setSensorId(sensorId);
+        this.value = value;
+    }
+
+    public SensorAddValueRequest(){}
 }

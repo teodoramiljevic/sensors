@@ -1,26 +1,16 @@
 package teodoramiljevic.sensors.messaging.SensorAddValue;
 
 import teodoramiljevic.sensors.messaging.ResponseBase;
+import teodoramiljevic.sensors.messaging.SensorValue;
 
 public class SensorAddValueResponse extends ResponseBase {
-    private  long timestamp;
-    private  double value;
+    private SensorValue value;
 
-    public SensorAddValueResponse(){}
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(final long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public double getValue() {
+    public SensorValue getValue() {
         return value;
     }
 
-    public void setValue(final double value) {
+    public void setValue(SensorValue value) {
         this.value = value;
     }
 }

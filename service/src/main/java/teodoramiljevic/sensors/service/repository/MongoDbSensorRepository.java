@@ -13,7 +13,12 @@ import teodoramiljevic.sensors.service.configuration.MongoDbProperties;
 import teodoramiljevic.sensors.service.models.Sensor;
 import teodoramiljevic.sensors.service.models.SensorData;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Projections.*;
 import static com.mongodb.client.model.Updates.push;
 
 @Repository
@@ -21,7 +26,7 @@ import static com.mongodb.client.model.Updates.push;
 public class MongoDbSensorRepository extends MongoDbRepository implements SensorRepository {
 
     //region Constants
-    private final String ID = "id";
+    private final String ID = "sensorId";
     private final String VALUES = "values";
     //endregion
 
@@ -44,9 +49,40 @@ public class MongoDbSensorRepository extends MongoDbRepository implements Sensor
         final Bson filter = eq(ID, sensorId);
         final Bson updateOperation = push(VALUES, sensorData);
 
+
         final UpdateResult result = collection.updateOne(filter, updateOperation, new UpdateOptions().upsert(true));
         logger.debug("Updating sensor with value of " + sensorData.getValue());
 
         return documentUpdated(result);
+    }
+
+    @Override
+    public Optional<SensorData> getLatestValue(final String sensorId) {
+        final Bson filter = eq(ID, sensorId);
+        final Bson last = slice("values", -1);
+
+        final Sensor result = collection.find(filter).projection(last).first();
+
+        if (result != null) {
+            final List<SensorData> values = result.getValues();
+            if (!values.isEmpty()) {
+                return Optional.of(values.get(0));
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public List<SensorData> getValues(final String sensorId) {
+        final Bson filter = eq(ID, sensorId);
+
+        List<SensorData> values = new ArrayList<>();
+        final Sensor result = collection.find(filter).projection(fields(include("values"))).first();
+        if (result != null) {
+            values = result.getValues();
+        }
+
+        return values;
     }
 }

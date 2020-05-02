@@ -1,19 +1,19 @@
-package teodoramiljevic.sensors.api.dto;
+package teodoramiljevic.sensors.api.dto.addValue;
 
 import javax.validation.constraints.NotBlank;
 
-public class SensorDataAddValueRequest {
+public class AddValueRequest {
     //TODO: Move to translatable key
     @NotBlank(message = "Id is mandatory")
-    private String id;
+    private String sensorId;
     private double value;
 
-    public String getId() {
-        return id;
+    public String getSensorId() {
+        return sensorId;
     }
 
-    public void setId(final String id) {
-        this.id = id;
+    public void setSensorId(final String sensorId) {
+        this.sensorId = sensorId;
     }
 
     public double getValue() {

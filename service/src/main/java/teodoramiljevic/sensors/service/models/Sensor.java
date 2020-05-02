@@ -1,16 +1,28 @@
 package teodoramiljevic.sensors.service.models;
 
+import org.bson.types.ObjectId;
+
 import java.util.List;
 
 public class Sensor {
-    private String id;
+    private ObjectId id;
+    private String sensorId;
     private List<SensorData> values;
 
-    public String getId() {
+
+    public String getSensorId() {
+        return sensorId;
+    }
+
+    public void setSensorId(final String sensorId) {
+        this.sensorId = sensorId;
+    }
+
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(final String id) {
+    public void setId(final ObjectId id) {
         this.id = id;
     }
 
