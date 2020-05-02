@@ -11,7 +11,7 @@ public class RabbitMqProperties {
     private String broadcastSensorExchange;
     private String directSensorExchange;
     private String sensorQueue;
-    private String rabbitHost;
+    private String host;
     private String sensorReplyQueue;
     private String consumerTimeout;
 
@@ -31,12 +31,12 @@ public class RabbitMqProperties {
         this.sensorReplyQueue = sensorReplyQueue;
     }
 
-    public String getRabbitHost() {
-        return rabbitHost;
+    public String getHost() {
+        return host;
     }
 
-    public void setRabbitHost(final String rabbitHost) {
-        this.rabbitHost = rabbitHost;
+    public void setHost(final String host) {
+        this.host = host;
     }
 
     String getBroadcastSensorExchange() {

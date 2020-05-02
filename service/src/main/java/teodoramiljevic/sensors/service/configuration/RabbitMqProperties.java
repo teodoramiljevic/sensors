@@ -4,22 +4,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties("app")
-public class AppProperties {
+@ConfigurationProperties("app.rabbitmq")
+public class RabbitMqProperties {
     private String broadcastSensorExchange;
     private String directSensorExchange;
     private String sensorQueue;
-    private String rabbitHost;
-
-    public String getRabbitPort() {
-        return rabbitPort;
-    }
-
-    public void setRabbitPort(String rabbitPort) {
-        this.rabbitPort = rabbitPort;
-    }
-
-    private String rabbitPort;
+    private String host;
     private String sensorReplyQueue;
 
 
@@ -31,12 +21,12 @@ public class AppProperties {
         this.sensorReplyQueue = sensorReplyQueue;
     }
 
-    public String getRabbitHost() {
-        return rabbitHost;
+    public String getHost() {
+        return host;
     }
 
-    public void setRabbitHost(final String rabbitHost) {
-        this.rabbitHost = rabbitHost;
+    public void setHost(final String host) {
+        this.host = host;
     }
 
     public String getBroadcastSensorExchange() {

@@ -1,0 +1,8 @@
+app:
+  rabbitmq:
+    broadcastSensorExchange: SENSOR_EXCHANGE_BROADCAST
+    directSensorExchange: SENSOR_EXCHANGE
+    sensorQueue: SENSOR_QUEUE
+    sensorReplyQueue: SENSOR_REPLY_QUEUE
+    host: localhost
+    consumerTimeout: 2000

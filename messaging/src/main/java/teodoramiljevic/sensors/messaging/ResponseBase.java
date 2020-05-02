@@ -3,6 +3,17 @@ package teodoramiljevic.sensors.messaging;
 public class ResponseBase {
     private MessageStatus status;
 
+    /**
+     * For model conversion purposes
+     */
+    public ResponseBase(){
+
+    }
+
+    public ResponseBase(final MessageStatus status){
+        this.status = status;
+    }
+
     public MessageStatus getStatus() {
         return status;
     }

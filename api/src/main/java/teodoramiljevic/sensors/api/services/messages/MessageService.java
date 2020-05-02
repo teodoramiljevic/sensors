@@ -28,7 +28,7 @@ public class MessageService implements Publisher, Consumer {
     public <T> Optional<String> publish(final T data){
         try{
             final String sensorDataJsonValue =  objectMapper.writeValueAsString(data);
-            return messagePublisher.publish(sensorDataJsonValue);
+            return messagePublisher.publish(sensorDataJsonValue, data.getClass().getName());
         }
         catch(final Exception ex){
             logger.error(ex.getMessage(), ex);

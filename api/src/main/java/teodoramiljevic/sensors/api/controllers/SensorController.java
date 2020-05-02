@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import teodoramiljevic.sensors.api.dto.SensorDataAddValueRequest;
 import teodoramiljevic.sensors.api.dto.SensorDataAddValueResponse;
-import teodoramiljevic.sensors.api.models.SensorData;
 import teodoramiljevic.sensors.api.services.SensorService;
 
 import javax.validation.Valid;
@@ -33,13 +32,11 @@ public class SensorController {
     //TODO: Handle invalid model exceptions - global handling
     @PutMapping("/addValue")
     public ResponseEntity<SensorDataAddValueResponse> addValue(@Valid @RequestBody final SensorDataAddValueRequest sensorDataAddValueRequest){
-        final Optional<SensorData> sensorData = sensorService.addValueToSensor(sensorDataAddValueRequest.getValue(), sensorDataAddValueRequest.getId());
+        final Optional<SensorDataAddValueResponse> sensorData = sensorService.addValueToSensor(sensorDataAddValueRequest.getValue(), sensorDataAddValueRequest.getId());
 
         if(sensorData.isPresent()){
-            final teodoramiljevic.sensors.api.dto.SensorDataAddValueResponse sensorDataAddValueResponse = modelMapper.map(sensorData.get(), teodoramiljevic.sensors.api.dto.SensorDataAddValueResponse.class);
-
-            logger.debug("Successfully added sensor value: "+ sensorDataAddValueResponse.getValue());
-            return ResponseEntity.ok(sensorDataAddValueResponse);
+            logger.debug("Successfully added sensor value: "+ sensorData.get().getValue());
+            return ResponseEntity.ok(sensorData.get());
         }
 
         logger.debug("Sensor service failed to add value for sensor " + sensorDataAddValueRequest.getId());

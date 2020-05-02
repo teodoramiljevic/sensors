@@ -22,7 +22,7 @@ public class MessagingConfigurationRunner implements CommandLineRunner {
     @Override
     public void run(final String... args) {
         final ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(properties.getRabbitHost());
+        factory.setHost(properties.getHost());
 
         try {
             final Connection connection = factory.newConnection();

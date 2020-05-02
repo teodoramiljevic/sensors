@@ -8,26 +8,27 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import teodoramiljevic.sensors.service.configuration.AppProperties;
+import teodoramiljevic.sensors.service.communication.MessageConsumer;
+import teodoramiljevic.sensors.service.configuration.RabbitMqProperties;
 
 @Component
 public class SensorRunner implements CommandLineRunner {
 
     @Autowired
-    private SensorService sensorService;
+    private MessageConsumer messageConsumer;
     @Autowired
-    private AppProperties properties;
+    private RabbitMqProperties properties;
 
     private final Logger logger = LogManager.getLogger();
 
-     Connection connection;
-     Channel channel;
+    Connection connection;
 
+    //TODO: Should me moved to a script
     @Override
-    public void run(String... args) throws Exception {
+    public void run(final String... args) throws Exception {
 
         final ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(properties.getRabbitHost());
+        factory.setHost(properties.getHost());
 
         try {
             final Connection connection = factory.newConnection();
@@ -36,20 +37,19 @@ public class SensorRunner implements CommandLineRunner {
             channel.exchangeDeclare(properties.getBroadcastSensorExchange(), "fanout");
             channel.exchangeDeclare(properties.getDirectSensorExchange(), "direct");
 
-            channel.queueDeclare(properties.getSensorQueue(),true, false, false, null);
-            channel.queueDeclare(properties.getSensorReplyQueue(),true, false, false, null);
+            channel.queueDeclare(properties.getSensorQueue(), true, false, false, null);
+            channel.queueDeclare(properties.getSensorReplyQueue(), true, false, false, null);
 
-            channel.queueBind(properties.getSensorQueue(), properties.getDirectSensorExchange(),"");
-            channel.queueBind(properties.getSensorReplyQueue(), properties.getBroadcastSensorExchange(),"");
+            channel.queueBind(properties.getSensorQueue(), properties.getDirectSensorExchange(), "");
+            channel.queueBind(properties.getSensorReplyQueue(), properties.getBroadcastSensorExchange(), "");
 
             channel.close();
             connection.close();
-        }
-        catch (final Exception ex){
+        } catch (final Exception ex) {
             logger.error(ex.getMessage(), ex);
             connection.close();
         }
 
-        sensorService.listen();
+        messageConsumer.consume();
     }
 }
