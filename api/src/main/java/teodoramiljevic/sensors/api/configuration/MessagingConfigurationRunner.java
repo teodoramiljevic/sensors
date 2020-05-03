@@ -28,8 +28,8 @@ public class MessagingConfigurationRunner implements CommandLineRunner {
             final Connection connection = factory.newConnection();
             final Channel channel = connection.createChannel();
 
-            channel.exchangeDeclare(properties.getBroadcastSensorExchange(), "fanout");
-            channel.exchangeDeclare(properties.getDirectSensorExchange(), "direct");
+            channel.exchangeDeclare(properties.getBroadcastSensorExchange(), "fanout", true);
+            channel.exchangeDeclare(properties.getDirectSensorExchange(), "direct", true);
 
             channel.queueDeclare(properties.getSensorQueue(),true, false, false, null);
             channel.queueDeclare(properties.getSensorReplyQueue(),true, false, false, null);

@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import teodoramiljevic.sensors.service.communication.MessageConsumer;
 import teodoramiljevic.sensors.service.configuration.RabbitMqProperties;
-import teodoramiljevic.sensors.service.repository.SensorRepository;
+import teodoramiljevic.sensors.service.services.requestHandler.RequestHandlerFactory;
+import teodoramiljevic.sensors.service.wrappers.ObjectMapperWrapper;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -18,19 +19,24 @@ public class RabbitMqMessageConsumer extends RabbitMqConnector implements Messag
 
     private final Logger logger = LogManager.getLogger(RabbitMqMessageConsumer.class);
     private final RabbitMqMessagePublisher messagePublisher;
-    private final SensorRepository repository;
+    private final RequestHandlerFactory requestHandlerFactory;
+    private final ObjectMapperWrapper objectMapper;
 
-    RabbitMqMessageConsumer(final RabbitMqProperties properties, final RabbitMqMessagePublisher messagePublisher, final SensorRepository sensorRepository) throws IOException, TimeoutException {
+    RabbitMqMessageConsumer(final RabbitMqProperties properties,
+                            final RabbitMqMessagePublisher messagePublisher,
+                            final RequestHandlerFactory requestHandlerFactory,
+                            final ObjectMapperWrapper objectMapper) throws IOException, TimeoutException {
         super(properties);
         this.messagePublisher = messagePublisher;
-        this.repository = sensorRepository;
+        this.requestHandlerFactory = requestHandlerFactory;
+        this.objectMapper = objectMapper;
     }
 
     public void consume() {
         try {
             final Channel channel = connection.createChannel();
             channel.basicQos(1);
-            channel.basicConsume(properties.getSensorQueue(), false, "", new RabbitMqMessageHandler(channel, messagePublisher, repository));
+            channel.basicConsume(properties.getSensorQueue(), false, "", new RabbitMqMessageHandler(channel, messagePublisher, requestHandlerFactory, objectMapper));
         } catch (final Exception ex) {
             logger.error(ex.getMessage(), ex);
         }

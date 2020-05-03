@@ -62,14 +62,16 @@ public class MongoDbSensorRepository extends MongoDbRepository implements Sensor
         final Bson last = slice("values", -1);
 
         final Sensor result = collection.find(filter).projection(last).first();
-
         if (result != null) {
             final List<SensorData> values = result.getValues();
             if (!values.isEmpty()) {
                 return Optional.of(values.get(0));
             }
+
+            logger.debug("There are no values for sensor " + sensorId);
         }
 
+        logger.debug("There is no sensor with sensor id of " + sensorId);
         return Optional.empty();
     }
 

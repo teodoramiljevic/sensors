@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import teodoramiljevic.sensors.service.wrappers.ObjectMapperWrapper;
 
 @Configuration
 public class ApplicationConfiguration {
@@ -15,7 +16,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+    public ObjectMapperWrapper objectMapper() {
+        return new ObjectMapperWrapper(new ObjectMapper());
     }
 }
