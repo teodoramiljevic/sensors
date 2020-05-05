@@ -16,7 +16,8 @@ import teodoramiljevic.sensors.service.wrapper.ObjectMapperWrapper;
 import java.io.IOException;
 import java.util.Optional;
 
-import static teodoramiljevic.sensors.messaging.MessageStatus.INTERNAL_ERROR;
+import static teodoramiljevic.sensors.messaging.MessageKeys.INTERNAL_ERROR;
+import static teodoramiljevic.sensors.messaging.MessageStatus.INTERNAL_SERVER_ERROR;
 
 public class RabbitMqMessageHandler extends DefaultConsumer {
 
@@ -49,7 +50,7 @@ public class RabbitMqMessageHandler extends DefaultConsumer {
             response = handleRequest(requestClass.get(), body);
         } else {
             logger.debug("Message type of the request is not supported");
-            final Optional<String> responseValue = objectMapper.writeValueAsString(new ResponseBase(INTERNAL_ERROR));
+            final Optional<String> responseValue = objectMapper.writeValueAsString(new ResponseBase(INTERNAL_SERVER_ERROR, INTERNAL_ERROR));
             if (responseValue.isPresent()) {
                 response = responseValue.get();
             }
