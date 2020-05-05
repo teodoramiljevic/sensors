@@ -1,0 +1,13 @@
+Configuration:
+  status: info
+  appenders:
+    Console:
+      name: "ConsoleAppender"
+      target: SYSTEM_OUT
+      PatternLayout:
+        Pattern: "%d [%t] %-5level %logger{36} (%M:%L) - %msg%n%throwable"
+  Loggers:
+    Root:
+      level: debug
+      AppenderRef:
+        ref: "ConsoleAppender"

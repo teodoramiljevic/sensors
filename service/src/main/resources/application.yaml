@@ -1,0 +1,14 @@
+app:
+  rabbitmq:
+    broadcastSensorExchange: SENSOR_EXCHANGE_BROADCAST
+    directSensorExchange: SENSOR_EXCHANGE
+    sensorQueue: SENSOR_QUEUE
+    sensorReplyQueue: SENSOR_REPLY_QUEUE
+    host: localhost
+  mongodb:
+    host: localhost
+    port: 27017
+    database: sensorDb
+    collection: sensors
+server:
+  port: 8082
