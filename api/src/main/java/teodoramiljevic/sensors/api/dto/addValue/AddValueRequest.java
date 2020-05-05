@@ -24,3 +24,5 @@ public class AddValueRequest {
         this.value = value;
     }
 }
+
+//TODO should avoid camelCase in package names, it is not by convention

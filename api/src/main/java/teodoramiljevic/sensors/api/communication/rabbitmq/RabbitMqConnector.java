@@ -14,9 +14,10 @@ import java.util.concurrent.TimeoutException;
 
 public class RabbitMqConnector implements AutoCloseable{
 
+    private final Logger logger = LogManager.getLogger(RabbitMqConnector.class);
+
     final RabbitMqProperties properties;
     final Connection connection;
-    private final Logger logger = LogManager.getLogger(RabbitMqConnector.class);
 
     RabbitMqConnector(final RabbitMqProperties properties) throws IOException, TimeoutException {
 
@@ -28,14 +29,15 @@ public class RabbitMqConnector implements AutoCloseable{
         connection = factory.newConnection();
     }
 
-    AMQP.BasicProperties createProps(final String contentType){
+    AMQP.BasicProperties createProperties(final String contentType){
         final String correlationId = UUID.randomUUID().toString();
-        final AMQP.BasicProperties props = new AMQP.BasicProperties
+        final AMQP.BasicProperties properties = new AMQP.BasicProperties
                 .Builder()
                 .correlationId(correlationId)
                 .contentType(contentType)
                 .build();
-        return props;
+
+        return properties;
     }
 
     public void close(){

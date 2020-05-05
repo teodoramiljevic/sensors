@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties
 @ConfigurationProperties("app.rabbitmq")
 public class RabbitMqProperties {
+
     private String broadcastSensorExchange;
     private String directSensorExchange;
     private String sensorQueue;

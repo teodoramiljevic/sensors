@@ -6,25 +6,30 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import teodoramiljevic.sensors.messaging.MessageStatus;
 import teodoramiljevic.sensors.messaging.ResponseBase;
 import teodoramiljevic.sensors.service.communication.MessagePublisher;
-import teodoramiljevic.sensors.service.services.requestHandler.RequestHandler;
-import teodoramiljevic.sensors.service.services.requestHandler.RequestHandlerFactory;
-import teodoramiljevic.sensors.service.wrappers.ClassWrapper;
-import teodoramiljevic.sensors.service.wrappers.ObjectMapperWrapper;
+import teodoramiljevic.sensors.service.service.requestHandler.RequestHandler;
+import teodoramiljevic.sensors.service.service.requestHandler.RequestHandlerFactory;
+import teodoramiljevic.sensors.service.wrapper.ClassWrapper;
+import teodoramiljevic.sensors.service.wrapper.ObjectMapperWrapper;
 
 import java.io.IOException;
 import java.util.Optional;
 
+import static teodoramiljevic.sensors.messaging.MessageStatus.INTERNAL_ERROR;
+
 public class RabbitMqMessageHandler extends DefaultConsumer {
+
     private final Logger logger = LogManager.getLogger(RabbitMqMessageHandler.class);
 
     private final ObjectMapperWrapper objectMapper;
     private final MessagePublisher messagePublisher;
     private final RequestHandlerFactory requestHandlerFactory;
 
-    RabbitMqMessageHandler(final Channel channel, final MessagePublisher messagePublisher, final RequestHandlerFactory requestHandlerFactory, final ObjectMapperWrapper objectMapper) {
+    RabbitMqMessageHandler(final Channel channel,
+                           final MessagePublisher messagePublisher,
+                           final RequestHandlerFactory requestHandlerFactory,
+                           final ObjectMapperWrapper objectMapper) {
         super(channel);
         this.messagePublisher = messagePublisher;
         this.requestHandlerFactory = requestHandlerFactory;
@@ -44,7 +49,7 @@ public class RabbitMqMessageHandler extends DefaultConsumer {
             response = handleRequest(requestClass.get(), body);
         } else {
             logger.debug("Message type of the request is not supported");
-            final Optional<String> responseValue = objectMapper.writeValueAsString(new ResponseBase(MessageStatus.INTERNAL_ERROR));
+            final Optional<String> responseValue = objectMapper.writeValueAsString(new ResponseBase(INTERNAL_ERROR));
             if (responseValue.isPresent()) {
                 response = responseValue.get();
             }

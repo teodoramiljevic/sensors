@@ -1,9 +1,16 @@
-package teodoramiljevic.sensors.api.dto;
+package teodoramiljevic.sensors.api.model;
 
 public class SensorValue {
 
     private  long timestamp;
     private  double value;
+
+    public SensorValue(){}
+
+    SensorValue(final long timestamp, final double value) {
+        this.timestamp = timestamp;
+        this.value = value;
+    }
 
     public long getTimestamp() {
         return timestamp;

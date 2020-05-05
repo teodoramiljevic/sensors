@@ -8,7 +8,7 @@ import com.mongodb.client.result.UpdateResult;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import teodoramiljevic.sensors.service.configuration.MongoDbProperties;
-import teodoramiljevic.sensors.service.models.repository.ConnectionProperties;
+import teodoramiljevic.sensors.service.repository.configuration.ConnectionProperties;
 
 import java.util.Arrays;
 
@@ -30,7 +30,7 @@ public class MongoDbRepository extends Connectible implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         if (mongoClient != null) {
             mongoClient.close();
         }

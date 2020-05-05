@@ -1,4 +1,4 @@
-package teodoramiljevic.sensors.api.configuration;
+package teodoramiljevic.sensors.service.service;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -8,11 +8,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import teodoramiljevic.sensors.service.communication.MessageConsumer;
+import teodoramiljevic.sensors.service.configuration.RabbitMqProperties;
 
-
-//TODO: To be moved to a script
 @Component
-public class MessagingConfigurationRunner implements CommandLineRunner {
+public class SensorRunner implements CommandLineRunner {
 
     //region Constants
     private final String FANOUT_EXCHANGE = "fanout";
@@ -21,12 +21,18 @@ public class MessagingConfigurationRunner implements CommandLineRunner {
     //endregion Constants
 
     @Autowired
-    private  RabbitMqProperties properties;
+    private MessageConsumer messageConsumer;
+    @Autowired
+    private RabbitMqProperties properties;
 
-    private static final Logger logger = LogManager.getLogger(MessagingConfigurationRunner.class);
+    private final Logger logger = LogManager.getLogger();
 
+    Connection connection;
+
+    //TODO: Should me moved to a script
     @Override
-    public void run(final String... args) {
+    public void run(final String... args) throws Exception {
+
         final ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(properties.getHost());
 
@@ -37,17 +43,19 @@ public class MessagingConfigurationRunner implements CommandLineRunner {
             channel.exchangeDeclare(properties.getBroadcastSensorExchange(), FANOUT_EXCHANGE, true);
             channel.exchangeDeclare(properties.getDirectSensorExchange(), DIRECT_EXCHANGE, true);
 
-            channel.queueDeclare(properties.getSensorQueue(),true, false, false, null);
-            channel.queueDeclare(properties.getSensorReplyQueue(),true, false, false, null);
+            channel.queueDeclare(properties.getSensorQueue(), true, false, false, null);
+            channel.queueDeclare(properties.getSensorReplyQueue(), true, false, false, null);
 
-            channel.queueBind(properties.getSensorQueue(), properties.getDirectSensorExchange(),QUEUE_BINDING_KEY);
-            channel.queueBind(properties.getSensorReplyQueue(), properties.getBroadcastSensorExchange(),QUEUE_BINDING_KEY);
+            channel.queueBind(properties.getSensorQueue(), properties.getDirectSensorExchange(), QUEUE_BINDING_KEY);
+            channel.queueBind(properties.getSensorReplyQueue(), properties.getBroadcastSensorExchange(), QUEUE_BINDING_KEY);
 
             channel.close();
             connection.close();
-        }
-        catch (final Exception ex){
+        } catch (final Exception ex) {
             logger.error(ex.getMessage(), ex);
+            connection.close();
         }
+
+        messageConsumer.consume();
     }
 }

@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties("app.mongodb")
 public class MongoDbProperties {
+
     private String host;
     private String port;
     private String database;
     private String collection;
-
 
     public String getDatabase() {
         return database;

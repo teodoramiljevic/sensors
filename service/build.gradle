@@ -19,29 +19,37 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+
     // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
-    compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.7'
+    compile('org.modelmapper:modelmapper:2.3.7')
 
     // https://mvnrepository.com/artifact/com.rabbitmq/amqp-client
-    compile group: 'com.rabbitmq', name: 'amqp-client', version: '5.9.0'
+    compile('com.rabbitmq:amqp-client:5.9.0')
 
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-log4j2
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '2.2.6.RELEASE'
+    compile('org.springframework.boot:spring-boot-starter-log4j2:2.2.6.RELEASE')
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    compile('com.fasterxml.jackson.core:jackson-databind:2.11.0')
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-dataformat-yaml
+    compile('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.0')
+
 
     // !!! Had to manually add core and bson dependencies because driver sync dependency pulls older versions !11
 
     // https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
-    compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.0.2'
+    compile('org.mongodb:mongodb-driver-sync:4.0.2')
 
     // https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-core
-    compile group: 'org.mongodb', name: 'mongodb-driver-core', version: '4.0.2'
+    compile('org.mongodb:mongodb-driver-core:4.0.2')
 
     // https://mvnrepository.com/artifact/org.mongodb/bson
-    compile group: 'org.mongodb', name: 'bson', version: '4.0.2'
+    compile('org.mongodb:bson:4.0.2')
 
+    // Local
+    compile('teodoramiljevic.sensors:messaging:1.0')
 
-    // LOCAL
-    compile group: 'teodoramiljevic.sensors', name: 'messaging', version: '1.0'
 }
 
 configurations.all {

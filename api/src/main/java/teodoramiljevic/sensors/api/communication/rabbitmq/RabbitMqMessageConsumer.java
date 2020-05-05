@@ -12,8 +12,9 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Service
 @Qualifier("default")
@@ -32,7 +33,7 @@ public class RabbitMqMessageConsumer extends RabbitMqConnector implements Messag
             final BlockingQueue<String> response = new ArrayBlockingQueue<>(1);
             final String consumerTag = channel.basicConsume(properties.getSensorReplyQueue(), false, "", new RabbitMqMessageHandler(channel, id, response));
 
-            final Optional<String> result = Optional.ofNullable(response.poll(properties.getConsumerTimeout(), TimeUnit.MILLISECONDS));
+            final Optional<String> result = Optional.ofNullable(response.poll(properties.getConsumerTimeout(), MILLISECONDS));
             if(result.isEmpty()){
                 logger.debug("Consume failed with timeout of " + properties.getConsumerTimeout() + "ms");
             }

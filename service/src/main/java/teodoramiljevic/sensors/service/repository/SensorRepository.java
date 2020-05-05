@@ -1,14 +1,15 @@
 package teodoramiljevic.sensors.service.repository;
 
-import teodoramiljevic.sensors.service.models.SensorData;
+import teodoramiljevic.sensors.service.model.SensorData;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface SensorRepository {
-    boolean addValue(String sensorId, SensorData sensorData);
 
-    Optional<SensorData> getLatestValue(String sensorId);
+    boolean saveValue(String sensorId, SensorData sensorData);
 
-    List<SensorData> getValues(String sensorId);
+    Optional<SensorData> getLatestValueBySensorId(String sensorId);
+
+    List<SensorData> getValuesBySensorId(String sensorId);
 }

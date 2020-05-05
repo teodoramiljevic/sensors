@@ -11,11 +11,18 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 public class RabbitMqMessageHandler extends DefaultConsumer {
+
+    //region Constants
+    private final String ENCODING = "UTF-8";
+    //endregion Constants
+
     private final String correlationId;
     private final BlockingQueue<String> responseQueue;
     private final Logger logger = LogManager.getLogger(RabbitMqMessageHandler.class);
 
-    RabbitMqMessageHandler(final Channel channel, final String correlationId, final BlockingQueue<String> responseQueue) {
+    RabbitMqMessageHandler(final Channel channel,
+                           final String correlationId,
+                           final BlockingQueue<String> responseQueue) {
         super(channel);
         this.correlationId = correlationId;
         this.responseQueue = responseQueue;
@@ -28,7 +35,7 @@ public class RabbitMqMessageHandler extends DefaultConsumer {
             throws IOException
     {
         if (properties.getCorrelationId().equals(correlationId)) {
-            final String data = new String(body, "UTF-8");
+            final String data = new String(body, ENCODING);
             logger.debug(data);
             responseQueue.offer(data);
             this.getChannel().basicAck(envelope.getDeliveryTag(), false);

@@ -1,6 +1,6 @@
 package teodoramiljevic.sensors.service.repository;
 
-import teodoramiljevic.sensors.service.models.repository.ConnectionProperties;
+import teodoramiljevic.sensors.service.repository.configuration.ConnectionProperties;
 
 public abstract class Connectible {
 

@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import teodoramiljevic.sensors.service.communication.MessageConsumer;
 import teodoramiljevic.sensors.service.configuration.RabbitMqProperties;
-import teodoramiljevic.sensors.service.services.requestHandler.RequestHandlerFactory;
-import teodoramiljevic.sensors.service.wrappers.ObjectMapperWrapper;
+import teodoramiljevic.sensors.service.service.requestHandler.RequestHandlerFactory;
+import teodoramiljevic.sensors.service.wrapper.ObjectMapperWrapper;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -17,7 +17,13 @@ import java.util.concurrent.TimeoutException;
 @Qualifier("default")
 public class RabbitMqMessageConsumer extends RabbitMqConnector implements MessageConsumer {
 
+    //region Constants
+    private final int MESSAGE_PROCESSING_LIMIT = 1;
+    private final String CONSUMER_TAG = "";
+    //endregion Constants
+
     private final Logger logger = LogManager.getLogger(RabbitMqMessageConsumer.class);
+
     private final RabbitMqMessagePublisher messagePublisher;
     private final RequestHandlerFactory requestHandlerFactory;
     private final ObjectMapperWrapper objectMapper;
@@ -34,9 +40,12 @@ public class RabbitMqMessageConsumer extends RabbitMqConnector implements Messag
 
     public void consume() {
         try {
+
             final Channel channel = connection.createChannel();
-            channel.basicQos(1);
-            channel.basicConsume(properties.getSensorQueue(), false, "", new RabbitMqMessageHandler(channel, messagePublisher, requestHandlerFactory, objectMapper));
+            channel.basicQos(MESSAGE_PROCESSING_LIMIT);
+            channel.basicConsume(properties.getSensorQueue(), false, CONSUMER_TAG,
+                    new RabbitMqMessageHandler(channel, messagePublisher, requestHandlerFactory, objectMapper));
+
         } catch (final Exception ex) {
             logger.error(ex.getMessage(), ex);
         }

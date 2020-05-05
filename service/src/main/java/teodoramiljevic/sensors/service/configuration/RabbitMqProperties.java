@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties("app.rabbitmq")
 public class RabbitMqProperties {
+
     private String broadcastSensorExchange;
     private String directSensorExchange;
     private String sensorQueue;
     private String host;
     private String sensorReplyQueue;
-
 
     public String getSensorReplyQueue() {
         return sensorReplyQueue;

@@ -16,6 +16,10 @@ import java.util.concurrent.TimeoutException;
 @Qualifier("default")
 public class RabbitMqMessagePublisher extends RabbitMqConnector implements MessagePublisher {
 
+    //region Constants
+    private final String ROUTING_KEY = "";
+    //endregion Constants
+
     private final Logger logger = LogManager.getLogger(RabbitMqMessagePublisher.class);
 
     public RabbitMqMessagePublisher(final RabbitMqProperties properties) throws IOException, TimeoutException {
@@ -23,14 +27,13 @@ public class RabbitMqMessagePublisher extends RabbitMqConnector implements Messa
     }
 
     public boolean publish(final String message, final String correlationId) {
-        try(final Channel channel = connection.createChannel()){
-            final AMQP.BasicProperties props = createProps(correlationId);
+        try (final Channel channel = connection.createChannel()) {
+            final AMQP.BasicProperties props = createProperties(correlationId);
 
-            channel.basicPublish(properties.getBroadcastSensorExchange(), "", props, message.getBytes("UTF-8"));
+            channel.basicPublish(properties.getBroadcastSensorExchange(), ROUTING_KEY, props, message.getBytes("UTF-8"));
 
             return true;
-        }
-        catch (final Exception ex){
+        } catch (final Exception ex) {
             logger.error(ex.getMessage(), ex);
             return false;
         }
