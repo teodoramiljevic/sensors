@@ -45,13 +45,11 @@ public class SensorController {
         final Optional<SensorData> sensorData = sensorService.addValue(addValueRequest.getSensorId(),new SensorData(addValueRequest.getValue()));
 
         if(sensorData.isPresent()){
-            logger.debug("Successfully added sensor value: "+ sensorData.get().getValue());
+            logger.debug("Successfully added - "+ sensorData.get().getValue());
             return ResponseEntity.ok(modelMapper.map(sensorData.get().getValue(), AddValueResponse.class));
         }
 
         logger.debug("Sensor service failed to add value for sensor " + addValueRequest.getSensorId());
-
-        //TODO: Handle possible exceptions/empty sensor data with meaningful logs
         return ResponseEntity.status(500).body(null);
     }
 
@@ -65,7 +63,6 @@ public class SensorController {
         }
 
         logger.debug("Failed to get latest value for sensor " + id);
-        //TODO: Handle possible exceptions/empty sensor data with meaningful logs
         return ResponseEntity.status(500).body(null);
     }
 

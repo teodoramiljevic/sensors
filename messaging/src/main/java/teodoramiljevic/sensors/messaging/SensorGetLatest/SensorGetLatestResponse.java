@@ -9,8 +9,8 @@ public class SensorGetLatestResponse extends ResponseBase {
 
     public SensorGetLatestResponse(){}
 
-    public SensorGetLatestResponse(SensorValue value, MessageStatus status){
-        super(status);
+    public SensorGetLatestResponse(SensorValue value, MessageStatus status, String messageKey){
+        super(status, messageKey);
         this.value = value;
     }
 

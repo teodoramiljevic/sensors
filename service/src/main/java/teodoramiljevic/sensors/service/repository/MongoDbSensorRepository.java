@@ -10,6 +10,7 @@ import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import teodoramiljevic.sensors.service.configuration.MongoDbProperties;
+import teodoramiljevic.sensors.service.exception.SensorNotFoundException;
 import teodoramiljevic.sensors.service.model.Sensor;
 import teodoramiljevic.sensors.service.model.SensorData;
 
@@ -56,7 +57,7 @@ public class MongoDbSensorRepository extends MongoDbRepository implements Sensor
     }
 
     @Override
-    public Optional<SensorData> getLatestValueBySensorId(final String sensorId) {
+    public Optional<SensorData> getLatestValueBySensorId(final String sensorId) throws SensorNotFoundException {
         final Bson filter = eq(ID, sensorId);
         final Bson last = slice(VALUES, LATEST_SLICE);
 
@@ -68,10 +69,12 @@ public class MongoDbSensorRepository extends MongoDbRepository implements Sensor
             }
 
             logger.debug("There are no values for sensor " + sensorId);
+            return Optional.empty();
+
         }
 
         logger.debug("There is no sensor with sensor id of " + sensorId);
-        return Optional.empty();
+        throw new SensorNotFoundException(sensorId);
     }
 
     @Override

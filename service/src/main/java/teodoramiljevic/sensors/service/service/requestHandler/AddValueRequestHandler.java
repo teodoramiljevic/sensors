@@ -9,7 +9,8 @@ import teodoramiljevic.sensors.messaging.SensorAddValue.SensorAddValueResponse;
 import teodoramiljevic.sensors.service.model.SensorData;
 import teodoramiljevic.sensors.service.repository.SensorRepository;
 
-import static teodoramiljevic.sensors.messaging.MessageStatus.INTERNAL_ERROR;
+import static teodoramiljevic.sensors.messaging.MessageKeys.VALUE_NOT_SAVED;
+import static teodoramiljevic.sensors.messaging.MessageStatus.INTERNAL_SERVER_ERROR;
 import static teodoramiljevic.sensors.messaging.MessageStatus.SUCCESS;
 
 @Service
@@ -39,7 +40,7 @@ public class AddValueRequestHandler extends RequestHandler<SensorAddValueRequest
         }
 
         logger.debug("Value " + request.getValue().getValue() + " not added to sensor " + request.getSensorId());
-        return new SensorAddValueResponse(null, INTERNAL_ERROR);
+        return new SensorAddValueResponse(null, INTERNAL_SERVER_ERROR, VALUE_NOT_SAVED);
     }
 
 }

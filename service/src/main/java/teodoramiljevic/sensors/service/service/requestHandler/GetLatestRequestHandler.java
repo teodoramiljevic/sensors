@@ -7,12 +7,15 @@ import org.springframework.stereotype.Service;
 import teodoramiljevic.sensors.messaging.SensorGetLatest.SensorGetLatestRequest;
 import teodoramiljevic.sensors.messaging.SensorGetLatest.SensorGetLatestResponse;
 import teodoramiljevic.sensors.messaging.SensorValue;
+import teodoramiljevic.sensors.service.exception.SensorNotFoundException;
 import teodoramiljevic.sensors.service.model.SensorData;
 import teodoramiljevic.sensors.service.repository.SensorRepository;
 
 import java.util.Optional;
 
-import static teodoramiljevic.sensors.messaging.MessageStatus.INTERNAL_ERROR;
+import static teodoramiljevic.sensors.messaging.MessageKeys.SENSOR_NOT_FOUND;
+import static teodoramiljevic.sensors.messaging.MessageKeys.VALUE_NOT_FOUND;
+import static teodoramiljevic.sensors.messaging.MessageStatus.NOT_FOUND;
 import static teodoramiljevic.sensors.messaging.MessageStatus.SUCCESS;
 
 @Service
@@ -31,18 +34,19 @@ public class GetLatestRequestHandler extends RequestHandler<SensorGetLatestReque
 
     @Override
     public SensorGetLatestResponse handle(final SensorGetLatestRequest request) {
-        logger.debug("Received get latest request");
-        final Optional<SensorData> sensorData = repository.getLatestValueBySensorId(request.getSensorId());
+        try {
+            final Optional<SensorData> sensorData = repository.getLatestValueBySensorId(request.getSensorId());
+            if (sensorData.isPresent()) {
+                logger.debug("Value found.");
+                final SensorValue latestValue = modelMapper.map(sensorData.get(), SensorValue.class);
+                return new SensorGetLatestResponse(latestValue, SUCCESS, null);
+            }
 
-        //TODO: Add message key so that it can be properly handled
-
-        if (sensorData.isPresent()) {
-            logger.debug("Latest value found");
-            final SensorValue latestValue = modelMapper.map(sensorData.get(), SensorValue.class);
-            return new SensorGetLatestResponse(latestValue, SUCCESS);
+            logger.debug("Sensor doesn't have any values.");
+            return new SensorGetLatestResponse(null, NOT_FOUND, VALUE_NOT_FOUND);
+        } catch (final SensorNotFoundException ex) {
+            logger.error(ex.getMessage(), ex);
+            return new SensorGetLatestResponse(null, NOT_FOUND, SENSOR_NOT_FOUND);
         }
-
-        logger.debug("Latest value not found - no values");
-        return new SensorGetLatestResponse(null, INTERNAL_ERROR);
     }
 }

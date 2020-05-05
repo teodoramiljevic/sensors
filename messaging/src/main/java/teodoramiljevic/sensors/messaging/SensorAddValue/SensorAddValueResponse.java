@@ -11,8 +11,8 @@ public class SensorAddValueResponse extends ResponseBase {
 
     }
 
-    public SensorAddValueResponse(SensorValue value, MessageStatus status){
-        super(status);
+    public SensorAddValueResponse(SensorValue value, MessageStatus status, String messageKey){
+        super(status, messageKey);
         this.setValue(value);
     }
 

@@ -11,8 +11,8 @@ public class SensorsGetValuesResponse extends ResponseBase {
 
     public SensorsGetValuesResponse(){}
 
-    public SensorsGetValuesResponse(MessageStatus status, List<SensorValue> values) {
-        super(status);
+    public SensorsGetValuesResponse(List<SensorValue> values, MessageStatus status, String messageKey) {
+        super(status, messageKey);
         this.values = values;
     }
 

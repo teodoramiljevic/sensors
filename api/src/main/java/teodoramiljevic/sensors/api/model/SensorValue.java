@@ -2,8 +2,8 @@ package teodoramiljevic.sensors.api.model;
 
 public class SensorValue {
 
-    private  long timestamp;
-    private  double value;
+    private long timestamp;
+    private double value;
 
     public SensorValue(){}
 
@@ -26,5 +26,10 @@ public class SensorValue {
 
     public void setValue(final double value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "Value: " + this.value;
     }
 }
