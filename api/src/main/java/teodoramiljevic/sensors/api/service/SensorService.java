@@ -6,6 +6,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import teodoramiljevic.sensors.api.model.SensorData;
 import teodoramiljevic.sensors.api.model.SensorDataList;
+import teodoramiljevic.sensors.api.model.SensorValue;
+import teodoramiljevic.sensors.api.repository.SensorCacheRepository;
 import teodoramiljevic.sensors.api.service.messages.MessageService;
 import teodoramiljevic.sensors.api.service.messages.ResponseHandler;
 import teodoramiljevic.sensors.messaging.SensorAddValue.SensorAddValueRequest;
@@ -25,16 +27,20 @@ public class SensorService{
     private final MessageService messageService;
     private final ResponseHandler responseHandler;
     private final ModelMapper modelMapper;
+    private final SensorCacheRepository sensorCacheRepository;
 
     public SensorService(final MessageService messageService,
                          final ResponseHandler responseHandler,
-                         final ModelMapper modelMapper){
+                         final ModelMapper modelMapper,
+                         final SensorCacheRepository sensorCacheRepository){
 
         this.messageService = messageService;
         this.responseHandler = responseHandler;
         this.modelMapper = modelMapper;
+        this.sensorCacheRepository = sensorCacheRepository;
     }
 
+    // TODO: too much LOGIC IN ONE METHOD
     public Optional<SensorData> addValue(final String sensorId, final SensorData data){
         final SensorAddValueRequest sensorAddValueRequest = new SensorAddValueRequest(sensorId, modelMapper.map(data.getValue(),
                                                                                         teodoramiljevic.sensors.messaging.SensorValue.class));
@@ -43,14 +49,26 @@ public class SensorService{
 
         final Optional<String> confirmedValue = messageService.consume(confirmationId);
         if(confirmedValue.isPresent()){
-            return responseHandler.handleResponse(confirmedValue.get(), SensorAddValueResponse.class, SensorData.class);
+            final Optional<SensorData> response = responseHandler.handleResponse(confirmedValue.get(), SensorAddValueResponse.class, SensorData.class);
+            if(response.isPresent()){
+                logger.debug("Setting latest value to cache");
+                sensorCacheRepository.setLatest(sensorId, response.get().getValue());
+            }
+            return response;
         }
 
         logger.error("Failed to add sensor value " + data.getValue().getValue() + " for sensor " + sensorId);
         return Optional.empty();
     }
 
+    //TODO too much logic in one method
     public Optional<SensorData> getLatest(final String sensorId){
+        final Optional<SensorValue> sensorValue = sensorCacheRepository.getLatest(sensorId);
+        if(sensorValue.isPresent()){
+            logger.debug("Pulled value from cache");
+            return Optional.of(new SensorData(sensorValue.get()));
+        }
+
         final SensorGetLatestRequest sensorGetLatestRequest = new SensorGetLatestRequest();
         sensorGetLatestRequest.setSensorId(sensorId);
 
@@ -58,7 +76,12 @@ public class SensorService{
 
         final Optional<String> confirmedValue = messageService.consume(confirmationId);
         if(confirmedValue.isPresent()){
-            return responseHandler.handleResponse(confirmedValue.get(), SensorGetLatestResponse.class, SensorData.class);
+            final Optional<SensorData> response = responseHandler.handleResponse(confirmedValue.get(), SensorGetLatestResponse.class, SensorData.class);
+            if(response.isPresent()){
+                logger.debug("Setting latest value to cache");
+                sensorCacheRepository.setLatest(sensorId, response.get().getValue());
+            }
+            return response;
         }
 
         logger.error("Failed to get latest value for sensor " + sensorId);

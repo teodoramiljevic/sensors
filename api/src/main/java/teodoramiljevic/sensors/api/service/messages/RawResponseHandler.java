@@ -1,11 +1,11 @@
 package teodoramiljevic.sensors.api.service.messages;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import teodoramiljevic.sensors.api.exception.NotFoundException;
+import teodoramiljevic.sensors.api.wrapper.ObjectMapperWrapper;
 import teodoramiljevic.sensors.messaging.MessageStatus;
 import teodoramiljevic.sensors.messaging.ResponseBase;
 
@@ -20,9 +20,9 @@ public class RawResponseHandler implements ResponseHandler {
     private final Logger logger = LogManager.getLogger(RawResponseHandler.class);
 
     private final ModelMapper modelMapper;
-    private final ObjectMapper objectMapper;
+    private final ObjectMapperWrapper objectMapper;
 
-    public RawResponseHandler(final ModelMapper modelMapper, final ObjectMapper objectMapper) {
+    public RawResponseHandler(final ModelMapper modelMapper, final ObjectMapperWrapper objectMapper) {
         this.modelMapper = modelMapper;
         this.objectMapper = objectMapper;
     }
@@ -66,11 +66,6 @@ public class RawResponseHandler implements ResponseHandler {
     }
 
     private <T> Optional<T> deserializeValue(final String value, final Class<T> originalClass){
-        try{
-            return Optional.of(objectMapper.readValue(value, originalClass));
-        }catch(final Exception ex){
-            logger.error(ex.getMessage(), ex);
-            return Optional.empty();
-        }
+        return objectMapper.readValue(value, originalClass);
     }
 }
