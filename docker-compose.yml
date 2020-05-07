@@ -4,6 +4,8 @@ services:
         image: rabbitmq:alpine
     mongodb:
         image: mongo
+    redis:
+       image: redis:alpine
     sensor-service:
         build: 
             context: ./service
@@ -16,6 +18,7 @@ services:
             context: ./api
         environment: 
             - APP_RABBITMQ_HOST=rabbitmq
+            - APP_REDIS_HOST=redis
         command: sh -c './wait-for-it.sh rabbitmq:5672 -- java -jar app.jar'
         ports: 
             - 8080:8080

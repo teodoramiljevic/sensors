@@ -17,4 +17,8 @@ public class SensorData{
     public SensorData(final double value) {
         this.value = new SensorValue(System.currentTimeMillis(), value);
     }
+
+    public SensorData(final SensorValue value) {
+        this.value = value;
+    }
 }
