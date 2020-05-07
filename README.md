@@ -5,7 +5,7 @@ The development is in progress.
 
 ### Architecture overview
 
-![Architecture overview](/images/overviewV1.png)
+![Architecture overview](/images/overviewV2.png)
 
 ### Develop with docker
 

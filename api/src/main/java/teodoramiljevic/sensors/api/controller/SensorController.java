@@ -40,6 +40,7 @@ public class SensorController {
     }
 
     //TODO: Handle invalid model exceptions - global handling
+    //TODO: Make better responses with message keys
     @PutMapping("/add-value")
     public ResponseEntity<AddValueResponse> addValue(@Valid @RequestBody final AddValueRequest addValueRequest){
         final Optional<SensorData> sensorData = sensorService.addValue(addValueRequest.getSensorId(),new SensorData(addValueRequest.getValue()));

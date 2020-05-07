@@ -40,7 +40,6 @@ public class SensorService{
         this.sensorCacheRepository = sensorCacheRepository;
     }
 
-    // TODO: too much LOGIC IN ONE METHOD
     public Optional<SensorData> addValue(final String sensorId, final SensorData data){
         final SensorAddValueRequest sensorAddValueRequest = new SensorAddValueRequest(sensorId, modelMapper.map(data.getValue(),
                                                                                         teodoramiljevic.sensors.messaging.SensorValue.class));
@@ -61,11 +60,10 @@ public class SensorService{
         return Optional.empty();
     }
 
-    //TODO too much logic in one method
     public Optional<SensorData> getLatest(final String sensorId){
         final Optional<SensorValue> sensorValue = sensorCacheRepository.getLatest(sensorId);
         if(sensorValue.isPresent()){
-            logger.debug("Pulled value from cache");
+            logger.debug("Latest value taken from cache");
             return Optional.of(new SensorData(sensorValue.get()));
         }
 

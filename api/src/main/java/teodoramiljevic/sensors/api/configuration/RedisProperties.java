@@ -11,6 +11,15 @@ public class RedisProperties {
 
     private String host;
     private String port;
+    private String timeout;
+
+    public int getTimeout(){
+        return Integer.parseInt(timeout);
+    }
+
+    public void setTimeout(final String timeout){
+        this.timeout = timeout;
+    }
 
     public String getHost() {
         return host;
