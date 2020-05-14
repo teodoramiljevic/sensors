@@ -1,0 +1,5 @@
+xpack:
+    monitoring:
+        elasticsearch:
+            hosts: 
+                - "${ELASTIC_HOST}"

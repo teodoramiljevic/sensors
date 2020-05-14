@@ -31,7 +31,7 @@ public class GetValuesRequestHandler extends RequestHandler<SensorGetValuesReque
 
     @Override
     public SensorsGetValuesResponse handle(final SensorGetValuesRequest request) {
-        logger.debug("Received get values request");
+        logger.info("Received [GET VALUES] request.");
         final List<SensorData> sensorValues = repository.getValuesBySensorId(request.getSensorId());
         final List<SensorValue> resultValues = Arrays.asList(modelMapper.map(sensorValues, SensorValue[].class));
 

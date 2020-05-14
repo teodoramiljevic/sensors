@@ -18,6 +18,7 @@ public class RabbitMqMessagePublisher extends RabbitMqConnector implements Messa
 
     //region Constants
     private final String ROUTING_KEY = "";
+    private final String ENCODING = "UTF-8";
     //endregion Constants
 
     private final Logger logger = LogManager.getLogger(RabbitMqMessagePublisher.class);
@@ -30,7 +31,7 @@ public class RabbitMqMessagePublisher extends RabbitMqConnector implements Messa
         try (final Channel channel = connection.createChannel()) {
             final AMQP.BasicProperties props = createProperties(correlationId);
 
-            channel.basicPublish(properties.getBroadcastSensorExchange(), ROUTING_KEY, props, message.getBytes("UTF-8"));
+            channel.basicPublish(properties.getBroadcastSensorExchange(), ROUTING_KEY, props, message.getBytes(ENCODING));
 
             return true;
         } catch (final Exception ex) {

@@ -10,6 +10,9 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * Responsible for handling the requests received from the queue.
+ */
 public class RabbitMqMessageHandler extends DefaultConsumer {
 
     //region Constants
@@ -36,7 +39,7 @@ public class RabbitMqMessageHandler extends DefaultConsumer {
     {
         if (properties.getCorrelationId().equals(correlationId)) {
             final String data = new String(body, ENCODING);
-            logger.debug(data);
+            logger.info(data);
             responseQueue.offer(data);
             this.getChannel().basicAck(envelope.getDeliveryTag(), false);
         }

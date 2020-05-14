@@ -34,15 +34,16 @@ public class GetLatestRequestHandler extends RequestHandler<SensorGetLatestReque
 
     @Override
     public SensorGetLatestResponse handle(final SensorGetLatestRequest request) {
+        logger.info("Received [GET LATEST] request.");
         try {
             final Optional<SensorData> sensorData = repository.getLatestValueBySensorId(request.getSensorId());
             if (sensorData.isPresent()) {
-                logger.debug("Value found.");
+                logger.info("Value for sensor " + request.getSensorId() + " found.");
                 final SensorValue latestValue = modelMapper.map(sensorData.get(), SensorValue.class);
                 return new SensorGetLatestResponse(latestValue, SUCCESS, null);
             }
 
-            logger.debug("Sensor doesn't have any values.");
+            logger.info("Sensor " + request.getSensorId() + " doesn't have any values.");
             return new SensorGetLatestResponse(null, NOT_FOUND, VALUE_NOT_FOUND);
         } catch (final SensorNotFoundException ex) {
             logger.error(ex.getMessage(), ex);

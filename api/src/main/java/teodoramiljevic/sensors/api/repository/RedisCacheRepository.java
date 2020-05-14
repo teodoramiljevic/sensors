@@ -11,6 +11,12 @@ import teodoramiljevic.sensors.api.configuration.RedisProperties;
 import java.io.Closeable;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Redis implementation of cache repository.
+ * Connects to an instance of Redis.
+ * Responsible of closing the connection to Redis.
+ * Implements async versions of get/set cache actions.
+ */
 public class RedisCacheRepository extends Connectible implements Closeable, CacheRepository {
 
     //region Constants

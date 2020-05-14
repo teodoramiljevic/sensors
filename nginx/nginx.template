@@ -1,0 +1,14 @@
+upstream api{
+    server ${API_HOST1};
+    server ${API_HOST2};
+}
+
+server{
+    listen ${NGINX_PORT};
+
+    location / {
+        proxy_pass http://api;
+    }
+}
+
+

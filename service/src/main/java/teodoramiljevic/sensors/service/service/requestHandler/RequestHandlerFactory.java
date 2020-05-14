@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Creates a request handler based on the received class.
+ */
 @Service
 public class RequestHandlerFactory {
 
@@ -21,10 +24,10 @@ public class RequestHandlerFactory {
     }
 
     public Optional<RequestHandler> getHandler(final Class requestClass) {
-        final RequestHandler handler = this.requestHandlers.getOrDefault(requestClass, null); // TODO: Maybe add some default handler
+        final RequestHandler handler = this.requestHandlers.getOrDefault(requestClass, null); // TODO: Add a default handler
 
         if (handler == null) {
-            logger.debug("Handler was not found");
+            logger.info("Handler not found. There are no compatible handlers for class " + requestClass.getName());
         }
 
         return Optional.ofNullable(handler);
