@@ -8,7 +8,7 @@ The idea of the project was to create a system which will be fed some simple sen
 
 ## Architecture overview
 
-![Architecture overview](/images/overviewV3.png)
+![Architecture overview](/images/overviewV4.png)
 
 ## Develop with docker
 
