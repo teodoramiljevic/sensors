@@ -20,6 +20,11 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 @Qualifier("default")
 public class RabbitMqMessageConsumer extends RabbitMqConnector implements MessageConsumer {
 
+    //region Constants
+    private final int MESSAGE_PROCESSING_LIMIT = 1;
+    private final String CONSUMER_TAG = "";
+    //endregion Constants
+
     private final Logger logger = LogManager.getLogger(RabbitMqMessageConsumer.class);
 
     RabbitMqMessageConsumer(final RabbitMqProperties properties) throws IOException, TimeoutException {
@@ -30,12 +35,12 @@ public class RabbitMqMessageConsumer extends RabbitMqConnector implements Messag
         try{
             final Channel channel = connection.createChannel();
 
-            final BlockingQueue<String> response = new ArrayBlockingQueue<>(1);
-            final String consumerTag = channel.basicConsume(properties.getSensorReplyQueue(), false, "", new RabbitMqMessageHandler(channel, id, response));
+            final BlockingQueue<String> response = new ArrayBlockingQueue<>(MESSAGE_PROCESSING_LIMIT);
+            final String consumerTag = channel.basicConsume(properties.getSensorReplyQueue(), false, CONSUMER_TAG, new RabbitMqMessageHandler(channel, id, response));
 
             final Optional<String> result = Optional.ofNullable(response.poll(properties.getConsumerTimeout(), MILLISECONDS));
             if(result.isEmpty()){
-                logger.debug("Consume failed with timeout of " + properties.getConsumerTimeout() + "ms");
+                logger.info("Consume failed with timeout of " + properties.getConsumerTimeout() + "ms");
             }
 
             channel.basicCancel(consumerTag);

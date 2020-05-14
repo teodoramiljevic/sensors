@@ -8,6 +8,6 @@ Configuration:
               Pattern: "%d [%t] %-5level %logger{36} (%M:%L) - %msg%n%throwable"
     Loggers:
       Root:
-        level: debug
+        level: info
         AppenderRef:
           ref: "ConsoleAppender"

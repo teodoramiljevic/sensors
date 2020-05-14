@@ -29,17 +29,18 @@ public class AddValueRequestHandler extends RequestHandler<SensorAddValueRequest
 
     @Override
     public SensorAddValueResponse handle(final SensorAddValueRequest request) {
+        logger.info("Received [ADD VALUE] request");
         final boolean valueAdded = repository.saveValue(request.getSensorId(), modelMapper.map(request.getValue(), SensorData.class));
 
         if (valueAdded) {
-            logger.debug("Value " + request.getValue().getValue() + "successfully added to sensor " + request.getSensorId());
+            logger.info("Value " + request.getValue().getValue() + " successfully added to sensor " + request.getSensorId());
             final SensorAddValueResponse sensorAddValueResponse = modelMapper.map(request, SensorAddValueResponse.class);
             sensorAddValueResponse.setStatus(SUCCESS);
 
             return sensorAddValueResponse;
         }
 
-        logger.debug("Value " + request.getValue().getValue() + " not added to sensor " + request.getSensorId());
+        logger.info("Value " + request.getValue().getValue() + " not added to sensor " + request.getSensorId());
         return new SensorAddValueResponse(null, INTERNAL_SERVER_ERROR, VALUE_NOT_SAVED);
     }
 

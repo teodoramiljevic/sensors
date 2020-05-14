@@ -43,7 +43,7 @@ public class MessageService implements Publisher, Consumer {
             return messageConsumer.consume(consumptionId.get());
         }
 
-        logger.debug("Consuming failed, consumption  ID was not present");
+        logger.info("Consuming failed, consumption ID was not present");
         return Optional.empty();
     }
 

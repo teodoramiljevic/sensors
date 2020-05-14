@@ -15,6 +15,10 @@ import java.util.Arrays;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
+/**
+ * Connects to an instance of MongoDB.
+ * Responsible of closing the connection to MongoDB.
+ */
 public class MongoDbRepository extends Connectible implements AutoCloseable {
 
     protected MongoClient mongoClient;

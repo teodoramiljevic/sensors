@@ -11,7 +11,11 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
-
+/**
+ * Connects to an instance of RabbitMq.
+ * Responsible of closing the connection to RabbitMq.
+ * Will throw and exception if the connection is not possible.
+ */
 public class RabbitMqConnector implements AutoCloseable{
 
     private final Logger logger = LogManager.getLogger(RabbitMqConnector.class);
@@ -29,6 +33,11 @@ public class RabbitMqConnector implements AutoCloseable{
         connection = factory.newConnection();
     }
 
+    /**
+     * Creates properties necessary for publishing messages to the queue.
+     * @param contentType Class name of a request
+     * @return Prepared properties.
+     */
     AMQP.BasicProperties createProperties(final String contentType){
         final String correlationId = UUID.randomUUID().toString();
         final AMQP.BasicProperties properties = new AMQP.BasicProperties

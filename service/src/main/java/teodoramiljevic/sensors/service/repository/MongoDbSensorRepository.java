@@ -51,7 +51,7 @@ public class MongoDbSensorRepository extends MongoDbRepository implements Sensor
         final Bson updateOperation = push(VALUES, sensorData);
 
         final UpdateResult result = collection.updateOne(filter, updateOperation, new UpdateOptions().upsert(true));
-        logger.debug("Updating sensor with value of " + sensorData.getValue());
+        logger.info("Updating sensor " + sensorId + " with value of " + sensorData.getValue());
 
         return documentUpdated(result);
     }
@@ -68,12 +68,12 @@ public class MongoDbSensorRepository extends MongoDbRepository implements Sensor
                 return Optional.of(values.get(0));
             }
 
-            logger.debug("There are no values for sensor " + sensorId);
+            logger.info("There are no values for sensor " + sensorId);
             return Optional.empty();
 
         }
 
-        logger.debug("There is no sensor with sensor id of " + sensorId);
+        logger.info("There is no sensor with sensor id of " + sensorId);
         throw new SensorNotFoundException(sensorId);
     }
 

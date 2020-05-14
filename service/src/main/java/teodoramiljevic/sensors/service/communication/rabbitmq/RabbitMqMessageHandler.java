@@ -19,6 +19,9 @@ import java.util.Optional;
 import static teodoramiljevic.sensors.messaging.MessageKeys.INTERNAL_ERROR;
 import static teodoramiljevic.sensors.messaging.MessageStatus.INTERNAL_SERVER_ERROR;
 
+/**
+ * Responsible for handling the requests received from the queue.
+ */
 public class RabbitMqMessageHandler extends DefaultConsumer {
 
     private final Logger logger = LogManager.getLogger(RabbitMqMessageHandler.class);
@@ -49,7 +52,7 @@ public class RabbitMqMessageHandler extends DefaultConsumer {
         if (requestClass.isPresent()) {
             response = handleRequest(requestClass.get(), body);
         } else {
-            logger.debug("Message type of the request is not supported");
+            logger.info("Message is not supported. Content type could not be resolved");
             final Optional<String> responseValue = objectMapper.writeValueAsString(new ResponseBase(INTERNAL_SERVER_ERROR, INTERNAL_ERROR));
             if (responseValue.isPresent()) {
                 response = responseValue.get();
@@ -60,8 +63,13 @@ public class RabbitMqMessageHandler extends DefaultConsumer {
         this.getChannel().basicAck(envelope.getDeliveryTag(), false);
     }
 
+    /**
+     * @param requestClass Class of received request
+     * @param body Body of the request
+     * @return If the received requests has a registered handler, it will be processed and serialized. Else null is returned.
+     */
     private String handleRequest(final Class requestClass, final byte[] body) {
-        logger.debug("Received data with type of " + requestClass.getName());
+        logger.info("Received request with type of " + requestClass.getName());
         final Class<?> classValue = requestClass;
         final Optional<?> request = objectMapper.readValue(body, classValue);
 
@@ -75,10 +83,10 @@ public class RabbitMqMessageHandler extends DefaultConsumer {
                 }
             }
 
-            logger.debug("No handler found for request of type " + requestClass.getName());
+            logger.info("No handler found for request of type " + requestClass.getName());
         }
 
-        logger.debug("Request body couldn't be parsed to the given type " + requestClass.getName());
+        logger.info("Request body couldn't be parsed to the given type " + requestClass.getName());
         return null;
     }
 }

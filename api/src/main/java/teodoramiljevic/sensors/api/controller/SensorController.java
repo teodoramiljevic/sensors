@@ -40,17 +40,16 @@ public class SensorController {
     }
 
     //TODO: Handle invalid model exceptions - global handling
-    //TODO: Make better responses with message keys
     @PutMapping("/add-value")
     public ResponseEntity<AddValueResponse> addValue(@Valid @RequestBody final AddValueRequest addValueRequest){
         final Optional<SensorData> sensorData = sensorService.addValue(addValueRequest.getSensorId(),new SensorData(addValueRequest.getValue()));
 
         if(sensorData.isPresent()){
-            logger.debug("Successfully added - "+ sensorData.get().getValue());
+            logger.info("Successfully added - "+ sensorData.get().getValue());
             return ResponseEntity.ok(modelMapper.map(sensorData.get().getValue(), AddValueResponse.class));
         }
 
-        logger.debug("Sensor service failed to add value for sensor " + addValueRequest.getSensorId());
+        logger.info("Sensor service failed to add value for sensor " + addValueRequest.getSensorId());
         return ResponseEntity.status(500).body(null);
     }
 
@@ -59,11 +58,12 @@ public class SensorController {
         final Optional<SensorData> sensorData = sensorService.getLatest(id);
 
         if(sensorData.isPresent()){
-            logger.debug("Successfully retrieved latest value");
-            return ResponseEntity.ok(modelMapper.map(sensorData.get().getValue(), GetLatestResponse.class));
+            SensorData data = sensorData.get();
+            logger.info("Successfully retrieved latest " + data.getValue() + " for sensor " + id);
+            return ResponseEntity.ok(modelMapper.map(data.getValue(), GetLatestResponse.class));
         }
 
-        logger.debug("Failed to get latest value for sensor " + id);
+        logger.info("Failed to get latest value for sensor " + id);
         return ResponseEntity.status(500).body(null);
     }
 

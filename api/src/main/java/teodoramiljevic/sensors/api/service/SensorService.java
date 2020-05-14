@@ -50,8 +50,8 @@ public class SensorService{
         if(confirmedValue.isPresent()){
             final Optional<SensorData> response = responseHandler.handleResponse(confirmedValue.get(), SensorAddValueResponse.class, SensorData.class);
             if(response.isPresent()){
-                logger.debug("Setting latest value to cache");
-                sensorCacheRepository.setLatest(sensorId, response.get().getValue());
+                SensorValue value = response.get().getValue();
+                setValueToCache(sensorId, value);
             }
             return response;
         }
@@ -63,8 +63,9 @@ public class SensorService{
     public Optional<SensorData> getLatest(final String sensorId){
         final Optional<SensorValue> sensorValue = sensorCacheRepository.getLatest(sensorId);
         if(sensorValue.isPresent()){
-            logger.debug("Latest value taken from cache");
-            return Optional.of(new SensorData(sensorValue.get()));
+            SensorValue value = sensorValue.get();
+            logger.info("Latest " + value + " taken from cache.");
+            return Optional.of(new SensorData(value));
         }
 
         final SensorGetLatestRequest sensorGetLatestRequest = new SensorGetLatestRequest();
@@ -76,8 +77,8 @@ public class SensorService{
         if(confirmedValue.isPresent()){
             final Optional<SensorData> response = responseHandler.handleResponse(confirmedValue.get(), SensorGetLatestResponse.class, SensorData.class);
             if(response.isPresent()){
-                logger.debug("Setting latest value to cache");
-                sensorCacheRepository.setLatest(sensorId, response.get().getValue());
+                SensorValue value = response.get().getValue();
+                setValueToCache(sensorId, value);
             }
             return response;
         }
@@ -99,5 +100,10 @@ public class SensorService{
         }
 
         return new SensorDataList();
+    }
+
+    private void setValueToCache(String sensorId, SensorValue value){
+        logger.info("Setting latest "+value+" of sensor " + sensorId + " to cache.");
+        sensorCacheRepository.setLatest(sensorId, value);
     }
 }

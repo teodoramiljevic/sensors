@@ -14,6 +14,9 @@ import java.util.Optional;
 import static teodoramiljevic.sensors.messaging.MessageStatus.NOT_FOUND;
 import static teodoramiljevic.sensors.messaging.MessageStatus.SUCCESS;
 
+/**
+ * Handles any response from the queue based on reponse status
+ */
 @Service
 public class RawResponseHandler implements ResponseHandler {
 
@@ -35,7 +38,7 @@ public class RawResponseHandler implements ResponseHandler {
             return handleResponseBasedOnStatus(sensorDataAddValueResponse.get(), conversionClass);
         }
 
-        logger.debug("Message conversion to "+ responseClass + " failed", response);
+        logger.info("Message conversion to "+ responseClass + " failed.", response);
         return Optional.empty();
     }
 
@@ -51,14 +54,14 @@ public class RawResponseHandler implements ResponseHandler {
     }
 
     private <T,C extends ResponseBase>  Optional<T>  handleSuccess(final C response, final Class<T> conversionClass){
-        logger.debug("Message successfully received");
         return Optional.of(this.modelMapper.map(response, conversionClass));
     }
 
-    // TODO: Handle other error types
+    //TODO: Handle other error types
+    //TODO: Make handler chain
     private void handleFailure(final ResponseBase response) {
         final MessageStatus status = response.getStatus();
-        logger.debug("Failed to handle response with status " + status.name());
+        logger.info("Failed to handle response with status " + status.name());
 
         if(response.getStatus() == NOT_FOUND){
             throw new NotFoundException(response.getMessageKey());

@@ -2,10 +2,16 @@ version: "3"
 services:
     rabbitmq:
         image: rabbitmq:alpine
+        networks:
+            - sensor
     mongodb:
         image: mongo
+        networks:
+            - sensor
     redis:
        image: redis:alpine
+       networks:
+        - sensor
     sensor-service:
         build: 
             context: ./service
@@ -13,12 +19,58 @@ services:
             - APP_RABBITMQ_HOST=rabbitmq
             - APP_MONGODB_HOST=mongodb
         command: sh -c './wait-for-it.sh rabbitmq:5672; ./wait-for-it.sh mongodb:27017 -- java -jar app.jar'
-    api:
+        networks:
+            - sensor
+    api1:
         build:
             context: ./api
         environment: 
             - APP_RABBITMQ_HOST=rabbitmq
             - APP_REDIS_HOST=redis
         command: sh -c './wait-for-it.sh rabbitmq:5672 -- java -jar app.jar'
-        ports: 
-            - 8080:8080
+        networks:
+            - sensor
+    api2:
+        build:
+            context: ./api
+        environment: 
+            - APP_RABBITMQ_HOST=rabbitmq
+            - APP_REDIS_HOST=redis
+        command: sh -c './wait-for-it.sh rabbitmq:5672 -- java -jar app.jar'
+        networks:
+            - sensor
+    web:
+        image: nginx
+        volumes:
+            - ./nginx/nginx.template:/etc/nginx/conf.d/nginx.template
+        ports:
+            - 8080:80
+        environment: 
+            - API_HOST1=api1:8080
+            - API_HOST2=api2:8080
+            - NGINX_PORT=80
+        command: /bin/bash -c "envsubst < /etc/nginx/conf.d/nginx.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
+        depends_on: 
+            - api1
+            - api2
+        networks:
+            - sensor
+    filebeat:
+        build:
+            context: ./filebeat
+        user: root
+        volumes: 
+            - /var/lib/docker/containers:/var/lib/docker/containers:ro                  
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+        environment: 
+            - LOGSTASH_HOST=ls01:5514
+        networks:
+            - sensor
+# networks:
+#   default:
+#     external:
+#       name: elastic_elastic
+
+networks:
+    sensor:
+        driver: bridge

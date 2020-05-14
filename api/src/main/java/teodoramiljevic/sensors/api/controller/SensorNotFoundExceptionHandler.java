@@ -13,6 +13,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ControllerAdvice
 public class SensorNotFoundExceptionHandler extends ResponseEntityExceptionHandler {
+
     @ExceptionHandler(value={NotFoundException.class})
     protected ResponseEntity<Object> handle(final SensorException ex, final WebRequest request){
         return handleExceptionInternal(ex, ex.getKey(), new HttpHeaders(), NOT_FOUND, request);
