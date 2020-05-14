@@ -66,11 +66,6 @@ services:
             - LOGSTASH_HOST=ls01:5514
         networks:
             - sensor
-# networks:
-#   default:
-#     external:
-#       name: elastic_elastic
-
 networks:
     sensor:
         driver: bridge

@@ -1,6 +1,6 @@
 # NGINX instructions (Docker)
 
-In this project NGINX server is used as load balancer towards the sesnor REST API.
+In this project NGINX server is used as load balancer towards the sensor REST API.
 
 ## Configuration
 

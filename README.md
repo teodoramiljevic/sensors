@@ -36,7 +36,11 @@ Read more on [elasticsearch multi-node cluster](https://www.elastic.co/guide/en/
 
 #### Log examples
 
+Nginx logs:
+
 ![Nginx logs](/images/nginx.png)
+
+Custom JAVA logs:
 
 ![Sensor logs](/images/sensor.png)
 
